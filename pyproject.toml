@@ -1,0 +1,21 @@
+[project]
+name = "pyductivity"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "click>=8.3.0",
+    "escpos>=2.0.0",
+    "fastapi[standard]>=0.118.3",
+    "feedparser>=6.0.12",
+    "gpiozero>=2.0.1",
+    "lgpio",
+    "opencv-python>=4.12.0.88",
+    "prompt-toolkit>=3.0.52",
+    "pydantic>=2.12.0",
+    "requests>=2.32.5",
+    "rich>=14.1.0",
+    "rpi-gpio>=0.7.1",
+    "sqlalchemy>=2.0.43",
+]
