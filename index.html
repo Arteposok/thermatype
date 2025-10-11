@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thermal Printer Control Panel</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f7fa;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2em;
+      padding: 2em;
+    }
+    h1 { color: #444; }
+    form {
+      background: white;
+      padding: 1.5em;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    label { font-weight: 600; display: block; margin-bottom: 0.5em; }
+    input, textarea {
+      width: 100%;
+      padding: 0.6em;
+      margin-bottom: 1em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+    button {
+      background: #0078d4;
+      color: white;
+      border: none;
+      padding: 0.6em 1.2em;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: #005fa3; }
+  </style>
+</head>
+<body>
+  <h1>🖨️ Thermal Printer Panel</h1>
+
+  <!-- Print from URL -->
+  <form id="urlForm">
+    <label>Print image from URL</label>
+    <input type="text" id="urlInput" placeholder="https://example.com/image.jpg" required>
+    <button type="submit">Print from URL</button>
+  </form>
+
+  <!-- Upload image -->
+  <form id="uploadForm" enctype="multipart/form-data">
+    <label>Print uploaded image</label>
+    <input type="file" id="imageInput" accept="image/*" required>
+    <button type="submit">Upload & Print</button>
+  </form>
+
+  <!-- Print text -->
+  <form id="textForm">
+    <label>Print text</label>
+    <textarea id="textInput" rows="4" placeholder="Enter text to print..." required></textarea>
+    <button type="submit">Print Text</button>
+  </form>
+
+  <script>
+    const baseURL = "http://192.168.1.67:8000"; // ← change to your server's IP if needed
+
+    // Print from URL
+    document.getElementById("urlForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const url = document.getElementById("urlInput").value;
+      await fetch(`${baseURL}/print_img_url`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+      alert("🖼️ Printing image from URL!");
+    });
+
+    // Upload image
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      const file = document.getElementById("imageInput").files[0];
+      formData.append("img", file);
+      await fetch(`${baseURL}/print_image`, {
+        method: "POST",
+        body: formData
+      });
+      alert("📤 Uploaded image sent to printer!");
+    });
+
+    // Print text
+    document.getElementById("textForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = document.getElementById("textInput").value;
+      await fetch(`${baseURL}/print_text`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+      alert("📝 Text sent to printer!");
+    });
+  </script>
+</body>
+</html>
+

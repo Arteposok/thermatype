@@ -4,6 +4,7 @@ import requests
 from io import BytesIO
 from escpos.printer import Usb
 from fastapi import FastAPI, UploadFile, File
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from PIL import Image
 
@@ -18,6 +19,13 @@ class URLBody(BaseModel):
 VENDOR_ID = 0x0FE6
 PRODUCT_ID = 0x811E
 p = Usb(VENDOR_ID, PRODUCT_ID)
+
+
+@app.get("/")
+def index():
+    with open("index.html") as html:
+        html_text = html.read()
+    return HTMLResponse(content=html_text, status_code=200)
 
 @app.post("/print_image")
 async def print(img: UploadFile = File(...)):
