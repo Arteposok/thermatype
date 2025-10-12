@@ -70,9 +70,8 @@
   </form>
 
   <script>
-    const baseURL = "http://192.168.1.67:8000"; // ← change to your server's IP if needed
+    const baseURL = "http://192.168.1.67:8000";
 
-    // Print from URL
     document.getElementById("urlForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const url = document.getElementById("urlInput").value;
@@ -81,10 +80,8 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url })
       });
-      alert("🖼️ Printing image from URL!");
     });
 
-    // Upload image
     document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData();
@@ -94,10 +91,8 @@
         method: "POST",
         body: formData
       });
-      alert("📤 Uploaded image sent to printer!");
     });
 
-    // Print text
     document.getElementById("textForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const text = document.getElementById("textInput").value;
@@ -106,7 +101,6 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text })
       });
-      alert("📝 Text sent to printer!");
     });
   </script>
 </body>

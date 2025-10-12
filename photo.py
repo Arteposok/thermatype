@@ -10,11 +10,14 @@ from PIL import Image
 
 app = FastAPI()
 
+
 class TextBody(BaseModel):
     text: str
 
+
 class URLBody(BaseModel):
     url: str
+
 
 VENDOR_ID = 0x0FE6
 PRODUCT_ID = 0x811E
@@ -27,20 +30,32 @@ def index():
         html_text = html.read()
     return HTMLResponse(content=html_text, status_code=200)
 
+
+def process(image, f):
+    imgcv = np.array(image)
+
+    if len(imgcv.shape) == 2:
+        imgcv = cv.cvtColor(imgcv, cv.COLOR_GRAY2BGR)
+
+    imgcv = cv.cvtColor(imgcv, cv.COLOR_BGR2GRAY)
+    #imgcv = cv.GaussianBlur(imgcv, (3, 3), 0)
+    imgcv = cv.resize(imgcv, (f, (int(image.height * f / image.width))))
+
+    image = Image.fromarray(imgcv)
+    return image
+
+
 @app.post("/print_image")
 async def print(img: UploadFile = File(...)):
     images = BytesIO(await img.read())
     images.seek(0)
     image = Image.open(images)
     f = 550
-    image = image.resize((f, (int(image.height * f / image.width))))
-    imgcv = np.array(image)
-    imgcv = cv.GaussianBlur(imgcv, (3, 3), 0)
-    imgcv = cv.cvtColor(imgcv, cv.COLOR_BGR2GRAY)
-    image = Image.fromarray(imgcv)
+    image = process(image, f)
     p.image(image)
     p.text("\n" * 3)
     p.cut()
+
 
 @app.post("/print_img_url")
 async def print(body: URLBody):
@@ -51,17 +66,13 @@ async def print(body: URLBody):
     images.seek(0)
     image = Image.open(images)
     f = 550
-    image = image.resize((f, (int(image.height * f / image.width))))
-    imgcv = np.array(image)
-    imgcv = cv.GaussianBlur(imgcv, (3, 3), 0)
-    imgcv = cv.cvtColor(imgcv, cv.COLOR_BGR2GRAY)
-    image = Image.fromarray(imgcv)
+    image = process(image, f)
     p.image(image)
     p.text("\n" * 3)
     p.cut()
+
 
 @app.post("/print_text")
 async def print(body: TextBody):
     p.text(body.text)
     p.cut()
-
