@@ -38,7 +38,7 @@ def process(image, f):
         imgcv = cv.cvtColor(imgcv, cv.COLOR_GRAY2BGR)
 
     imgcv = cv.cvtColor(imgcv, cv.COLOR_BGR2GRAY)
-    #imgcv = cv.GaussianBlur(imgcv, (3, 3), 0)
+    imgcv = cv.GaussianBlur(imgcv, (3, 3), 0)
     imgcv = cv.resize(imgcv, (f, (int(image.height * f / image.width))))
 
     image = Image.fromarray(imgcv)
