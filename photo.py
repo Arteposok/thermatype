@@ -18,7 +18,7 @@ class TextBody(BaseModel):
 class URLBody(BaseModel):
     url: str
 
-
+#0x0FE6 pid 0x811E
 VENDOR_ID = 0x0FE6
 PRODUCT_ID = 0x811E
 p = Usb(VENDOR_ID, PRODUCT_ID)
