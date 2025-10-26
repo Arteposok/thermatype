@@ -48,7 +48,7 @@ def remove_task(title):
 
 
 def get_tasks():
-    return select(Task).order_by(asc(Task.due)).all()
+    return select(Task).order_by(asc(Task.due))
 
 
 @click.group()
