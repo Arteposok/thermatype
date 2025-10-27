@@ -193,6 +193,7 @@ async def print(body: URLBody):
 
 @app.post("/print_text")
 async def print(body: TextBody):
+    logger.debug(str(body))
     p.text(body.text)
     p.cut()
     logger.success("success")
