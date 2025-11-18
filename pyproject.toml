@@ -10,6 +10,7 @@ dependencies = [
     "fastapi[standard]>=0.118.3",
     "feedparser>=6.0.12",
     "loguru>=0.7.3",
+    "lorem>=0.1.1",
     "opencv-python>=4.12.0.88",
     "prompt-toolkit>=3.0.52",
     "pydantic>=2.12.0",
