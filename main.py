@@ -18,10 +18,9 @@ from sqlalchemy.orm import sessionmaker
 import datetime as dt
 
 
-
-
 engine = create_engine("sqlite:///data.db")
 logger.success("database engine created")
+
 
 class Base(DeclarativeBase):
     pass
@@ -41,14 +40,18 @@ SessionLocal = sessionmaker(bind=engine)
 s = SessionLocal()
 app = FastAPI()
 logger.success("created application")
+
+
 class NewTask(BaseModel):
     title: str
     details: str
     due: str
+
+
 @app.post("/add_task")
-def add_task(f:NewTask):
+def add_task(f: NewTask):
     logger.debug(f)
-    due =dateutil.parser.isoparse(f.due)
+    due = dateutil.parser.isoparse(f.due)
     task = Task(title=f.title, details=f.details, due=due)
     s.add(task)
     s.commit()
@@ -58,8 +61,9 @@ def add_task(f:NewTask):
 class RemoveTask(BaseModel):
     title: str
 
+
 @app.post("/remove_task")
-def remove_task(f:RemoveTask):
+def remove_task(f: RemoveTask):
     task = s.query(Task).filter_by(title=f.title).first()
     s.delete(task)
     s.commit()
@@ -73,9 +77,9 @@ def get_tasks():
 
     logger.success("success")
 
+
 def get_all_tasks():
     return list(select(Task).order_by(asc(Task.due)))
-
 
 
 @app.get("/print_tasks")
@@ -85,6 +89,7 @@ def print_tasks():
         print(f"{task.id} - {task.title}")
 
     logger.success("success")
+
 
 def rss(p):
     feeds = [
@@ -124,8 +129,6 @@ by {d.feed.get("title", "no name")}
     logger.success("success")
 
 
-
-
 class TextBody(BaseModel):
     text: str
 
@@ -133,7 +136,8 @@ class TextBody(BaseModel):
 class URLBody(BaseModel):
     url: str
 
-#0x0FE6 pid 0x811E
+
+# 0x0FE6 pid 0x811E
 VENDOR_ID = 0x0FE6
 PRODUCT_ID = 0x811E
 p = Usb(VENDOR_ID, PRODUCT_ID)
@@ -147,6 +151,7 @@ def index():
 
     logger.success("success")
 
+
 def process(image, f):
     imgcv = np.array(image)
 
@@ -154,7 +159,7 @@ def process(image, f):
         imgcv = cv.cvtColor(imgcv, cv.COLOR_GRAY2BGR)
 
     imgcv = cv.cvtColor(imgcv, cv.COLOR_BGR2GRAY)
-    #imgcv = cv.GaussianBlur(imgcv, (3, 3), 0)
+    # imgcv = cv.GaussianBlur(imgcv, (3, 3), 0)
     imgcv = cv.resize(imgcv, (f, (int(image.height * f / image.width))))
 
     image = Image.fromarray(imgcv)
@@ -163,7 +168,7 @@ def process(image, f):
 
 
 @app.post("/print_image")
-async def print(img: UploadFile = File(...)):
+async def print_image(img: UploadFile = File(...)):
     images = BytesIO(await img.read())
     images.seek(0)
     image = Image.open(images)
@@ -176,7 +181,7 @@ async def print(img: UploadFile = File(...)):
 
 
 @app.post("/print_img_url")
-async def print(body: URLBody):
+async def print_url(body: URLBody):
     response = requests.get(body.url)
     response.raise_for_status()
 
@@ -192,7 +197,7 @@ async def print(body: URLBody):
 
 
 @app.post("/print_text")
-async def print(body: TextBody):
+async def print_text(body: TextBody):
     logger.debug(str(body))
     p.text(body.text)
     p.cut()
